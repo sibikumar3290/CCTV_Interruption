@@ -1,98 +1,169 @@
-# QUANTUM VISION ATTENDANCE SYSTEM
+# QUANTUM VISION X 
 
-## Overview  
-Quantum Vision Attendance System is a face recognition-based attendance solution designed to simplify and automate attendance marking. It captures face images from a camera, extracts detailed facial features using Dlib’s powerful models, and recognizes registered faces by comparing these features. This system is perfect for organizations looking to modernize attendance with reliable facial recognition.
+## Overview
 
----
-
-## Features  
-- Capture face images from a camera for multiple people.  
-- Detect faces accurately using Dlib’s frontal face detector.  
-- Extract 128-dimensional facial feature vectors from each face image.  
-- Calculate average facial features for each person to improve recognition accuracy.  
-- Save all extracted features into a CSV file (`features_all.csv`) for quick future recognition.  
-- Ideal for automated attendance and identity verification.
+**Quantum Vision X** is an intelligent CCTV intrusion detection system designed for real-time perimeter and area security. It continuously monitors CCTV/RTSP camera feeds, detects unauthorized intrusions using computer vision, and triggers alerts and backend updates instantly. The system is optimized for multi-camera environments and supports scalable deployment for campuses, offices, warehouses, and restricted zones.
 
 ---
 
-## Project Structure  
+## Key Capabilities
 
+* Real-time intrusion detection from CCTV / IP camera feeds
+* Supports multiple RTSP cameras simultaneously (multi-threaded)
+* Motion and object-based intrusion analysis
+* Day/Night robust detection using frame preprocessing
+* Automatic alert triggering and backend updates
+* Centralized monitoring with camera-wise status tracking
+* Designed for continuous 24×7 surveillance
+
+---
+
+## System Architecture
+
+Quantum Vision X processes live CCTV feeds, performs frame analysis, detects intrusions, and updates the system state via database/API integration.
+
+**High-level flow:**
+
+```
+CCTV / IP Camera (RTSP)
+        ↓
+Frame Capture (OpenCV)
+        ↓
+Preprocessing (Grayscale, Noise Reduction)
+        ↓
+Intrusion Detection Logic
+        ↓
+Alert Generation & Status Update
+        ↓
+Backend / Database
+```
+
+---
+
+## Project Structure
+
+```
 data/
-├── data_faces_from_camera/ # Cropped face images collected from the camera, organized by person
-├── data_dlib/ # Pre-trained Dlib models for face landmark detection and recognition
-features_extraction.py # Script to extract facial features and save them into a CSV file
-face_capture.py # Script to capture face images from camera
-face_recognition.py # Script to recognize faces using saved features
-features_all.csv # CSV file storing average 128D features of all registered persons
+├── models/                     # Pre-trained detection models
+├── camera_config/              # Camera IP & RTSP configurations
+├── logs/                       # System logs
+
+intrusion_detection.py          # Core intrusion detection logic
+camera_monitor.py               # Multi-camera monitoring & threading
+alert_manager.py                # Alert and notification handling
+status_updater.py               # Backend & database updates
+main.py                         # System entry point
+```
 
 ---
 
-## How to Use
+## How It Works
 
-### 1. Capture Faces  
-Run the face capture script to collect face images for each person you want to register:  
+### 1. Camera Monitoring
+
+* Each CCTV camera is accessed via RTSP.
+* Camera connectivity is verified continuously.
+* Each camera runs in a dedicated thread for parallel processing.
+
+### 2. Frame Processing
+
+* Frames are captured in real time.
+* Converted to grayscale for faster processing.
+* Noise reduction and normalization applied.
+
+### 3. Intrusion Detection
+
+* Motion and object presence are analyzed.
+* Threshold-based and model-based logic determines intrusion.
+* Distinguishes normal background activity from unauthorized movement.
+
+### 4. Alert & Status Update
+
+* Intrusion events are logged immediately.
+* Camera-wise intrusion status is updated.
+* Backend API / database receives real-time updates.
+
+---
+
+## Detection Logic (Conceptual)
+
+* Continuous frame comparison
+* Brightness and motion intensity analysis
+* Region-of-interest based intrusion validation
+* False-positive reduction using temporal consistency
+
+---
+
+## Multi-Camera Support
+
+* Thread-based architecture
+* Thread-safe shared status storage
+* Independent failure handling per camera
+* Scales easily with additional cameras
+
+---
+
+## Use Cases
+
+* Office and corporate security
+* Industrial area surveillance
+* Campus and hostel monitoring
+* Restricted zone protection
+* Warehouse and storage facilities
+
+---
+
+## Requirements
+
+* Python 3.x
+* OpenCV
+* NumPy
+* Requests
+* Threading support
+
+---
+
+## Installation
+
+Install required dependencies:
+
 ```bash
-python face_capture.py
-Make sure your camera is connected and working properly.
+pip install opencv-python numpy requests
+```
 
-2. Extract Features
-Next, run the feature extraction script to process the collected images and extract their 128D facial features:
+Configure camera RTSP URLs in the camera configuration file before running the system.
 
-python features_extraction.py
-This will create or update the data/features_all.csv file with average feature vectors for each registered person.
+---
 
-3. Recognize Faces
-Finally, use the face recognition script to identify faces from a live camera feed or images by comparing against the saved features:
+## Running the System
 
-python face_recognition.py
-(Add any specific instructions or parameters here as needed.)
+```bash
+python main.py
+```
 
-How Feature Extraction Works
-The features_extraction.py script:
+The system will:
 
-Detects faces in images using Dlib’s frontal face detector.
+* Initialize all CCTV cameras
+* Start real-time monitoring
+* Detect intrusions
+* Update alerts automatically
 
-Extracts 68 facial landmarks to properly align and analyze each face.
+---
 
-Uses a pre-trained ResNet model to compute a 128-dimensional descriptor vector for each face.
+## Advantages of Quantum Vision X
 
-Averages these descriptors for all images of the same person to get a stable feature vector.
+* Real-time intrusion detection
+* Low latency processing
+* Scalable multi-camera architecture
+* Automated backend integration
+* Reduced manual monitoring effort
 
-Saves all person names and their average feature vectors into features_all.csv for later recognition.
+---
 
-Key functions:
+## Confidentiality Notice
 
-return_128d_features(path_img): Extracts 128D features from a single image.
+This repository contains **documentation and architectural details only**. Core implementation files are excluded due to confidentiality and security agreements.
 
-return_features_mean_personX(path_face_personX): Computes the average 128D features from all images of one person.
+---
 
-main(): Processes all person folders and writes the combined features to CSV.
-
-Requirements
- Python 3.x
-
- OpenCV
-
- Dlib
-
- Numpy
-
-Installation Instructions
-Install the required Python packages using pip:
-
-
-pip install numpy opencv-python dlib
-Download the required Dlib models and place them in the data/data_dlib/ directory:
-
-shape_predictor_68_face_landmarks.dat
-
-dlib_face_recognition_resnet_model_v1.dat
-
-You can download these models from the official Dlib site:
-
-Shape Predictor 68 Landmarks
-
-Face Recognition ResNet Model
-
-
-This repository contains only documentation and project description due to confidentiality agreements.
+**Quantum Vision X** – Intelligent Surveillance. Proactive Security.
